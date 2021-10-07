@@ -62,7 +62,7 @@ However, all codes shown in here are done calling directly a ChromeDriver so the
 Alright, you should know there are different fraworks for testing, such as JUnit and TestNG. However, TestNG is extremely powerful given the anottations you can use that allow you to execute scripts before or after certain events. 
 Here are some: 
 
-###TestNG Anottations
+### TestNG Anottations
 ```
 @AfterTest //Runs this method after each Test, indistinct from classes
 public void MethodThatRunsAfterEachTest(){
@@ -119,7 +119,7 @@ It's important to use these annotations, since suites run the Tests in *alphabet
 If you right click on your Maven Project, you'll be given the option to convert to TestNG. Doing so, will create an xml file corresponding to the Suite. 
 Using this file correctly allows you to run certain tests given your parameters in a single click, so it's kind of important
 
-###XML usage
+### XML usage
 
 To add **parameters**: 
 
@@ -194,7 +194,7 @@ To run test cases which are identified **by a tag name** (even if they are form 
 	</classes>
 </test>
 ```
-###Using the Page Object Model (POM)
+### Using the Page Object Model (POM)
 So, this is a way of writing your tests that makes your code really mantainable. You can check out a whole implementation in the examples, however you should understand what it is and the main lines that are used to get you started on POM. 
 POM basically considers each page as a whole object (or class, if you want to see it that way). There are certain attributes in that page (web elements) such as buttons, links and forms and there are certain behaviors attached to the page, like pressing the button and sending the form. 
 So, you declare each one of this attributes as a variable using the @FindBy anottation and create methods for interacting with the behaviors of the page. 
