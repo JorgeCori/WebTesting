@@ -54,3 +54,57 @@ In order to use these, you have to setup a Maven project, no archetype needed. O
   </dependencies>
 	
 ''' 
+*NOTE*: The dependency used for WebDriverManager stopped working for some reason when updating to the latest version. 
+It's better to work with this dependency because it allows you to run the tests in different browsers without having to download each driver. 
+However, all codes shown in here are done calling directly a ChromeDriver so the tests can run. If WebDriverManager is fixes, make sure to use it for better integration. 
+
+
+## Getting started with testing 
+Alright, you should know there are different fraworks for testing, such as JUnit and TestNG. However, TestNG is extremely powerful given the anottations you can use that allow you to execute scripts before or after certain events. 
+Here are some: 
+
+'''
+@AfterTest //Runs this method after each Test, indistinct from classes
+public void MethodThatRunsAfterEachTest(){
+
+}
+@BeforeTest //Runs this method before each test, indistinct from classes 
+public void MethodThatRunsBeforeEachTest(){
+
+}
+@BeforeSuite //Runs this method before executing the whole suite of tests, indistinct from classes
+public void MethodThatRunsBeforeWholeSuite(){
+
+}
+@AfterSuite //Runs this method after executing the whole suite of tests, indistinct from classes
+public void MethodThatRunsAfterWholeSuite(){
+
+}
+@BeforeMethod //Runs this method before every method that is present in the same class
+public void MethodThatRunsBeforeEveryMethodInThisClass(){
+
+}
+
+@AfterMethod //Runs this method after every method that is present in the same class
+public void MethodThatRunsAfterEveryMethodInThisClass(){
+
+}
+
+@DataProvider(name="name-of-data-provider") //Creates a method that loads specific data into a test case. This method returns a multi dimensional array. If you need different data types, use Object [][], if it's a specific data type String[][], int[][], etc. 
+public Object[][] dataProvider(){
+	return new Object[][] {...}
+}
+
+@Parameter("parameterName") //This declares that this method uses a certain parameter declarated previously, when creating the method, the first argument is automatically replaced by the parameter
+public void ThisMethodTakesTheParamenterInTheFirstArgument(String parameterPasses){
+	
+}
+
+@Test //Identifies the current method as a test, extra parameters 
+//@Test(enabled = false) ignores the test case
+//@Test(timeOut = 4000) waits for a specific test case for 4000 milliseconds
+//@Test(groups = {"tagName"}) creates a tag for the test in order to group it with some other cases
+'''
+
+Use these accordingly to your testing needs. For example, a BeforeTest can be used to create the WebDriver Object every time you run a new test, or an AfterTest can clean up remaining data. 
+It's important to use these annotations, since suites run the Tests in *alphabetical order*, so take that into consideration. 
