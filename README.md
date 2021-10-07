@@ -58,7 +58,7 @@ It's better to work with this dependency because it allows you to run the tests 
 However, all codes shown in here are done calling directly a ChromeDriver so the tests can run. If WebDriverManager is fixes, make sure to use it for better integration. 
 
 
-## Getting started with testing 
+## Getting started with testing - Theory
 Alright, you should know there are different fraworks for testing, such as JUnit and TestNG. However, TestNG is extremely powerful given the anottations you can use that allow you to execute scripts before or after certain events. 
 Here are some: 
 
@@ -216,3 +216,12 @@ public PageClassName(WebDriver driver){
 	}
 ```
 And you're all setup to start referencing objects with the @FindBy anottations. 
+
+
+## Getting started with Testing - Practice
+1. Abstract WebDriver
+
+Let's setup a utilities class to help us setup the driver and quitting the browser after each test
+This file can be found as *AbstractWebDriver.java* in the repository. 
+
+This will be used as a super class, so that we can inherit the driver object.  
