@@ -1,4 +1,4 @@
-# WebTesting
+# Web Testing with Java and Selenium
 
 This repo serves as notes for Web Testing using Selenium. The notes cover from the installation, to different resoruces and examples to be used in Web Testing. 
 
@@ -363,4 +363,160 @@ Executing some JavaScript may be an option to get there without having to find t
 JavascriptExecutor jse = (JavaScriptExecutor) driver;
 WebElement parentElementFromChild = (WebElement) jse.ExecuteScript("return arguments[0].parentNode;", childElement);
 ```
+## Asserting 
+Short section, but a really important one. Asserts are used in order to determine if what you got is what you wanted. 
+There are a handful of these methods, but these are the two most used: 
 
+```
+Assert.assertTrue(); // expects the value in the argument to be true, otherwise the test case fails
+Assert.asserEquals(actualResult, expectedResult); //compares values to determine if you for what you wanted. This can be applied to all primitive data type
+
+## Advanced Test Features 
+Big boy stuff. Not really, but here are more functionalities that may help you out. 
+
+### Reading CSS Styles 
+Sometimes it's important to validate that a certain element is being styled as it should be. 
+In those cases, you might want to use 
+```
+element.getCssValue("css-value");
+```
+So you can check any css related attribute and compare against what you want. 
+**NOTE**: if you're checking for color, be advised that even if the color is expressed in hex value in the html, if you actually get the value, it returns in a format of "rgb(x,x,x)". 
+
+### Windows and Navigating 
+So, you can move and resize the window if you need it for any reason:
+```
+driver.manage().window().getPosition();
+driver.manage().window().getSize();
+driver.manage().window().fullScreen();
+driver.manage().window().maximize();
+driver.manage().window().setPosition();
+
+```
+To navigate (back, forward and refresh buttons):
+
+```
+driver.navigate().back();
+driver.navigate().forward();
+driver.navigate().refresh();
+```
+
+### Waiting (Explicitly and Implicitly)
+This one is really important. Sometimes there are certain elements that are loaded or are delayed to display. 
+If you try to search for them when they're still not available, the test will fail. One quick way out is using the Thread.sleep() function, however this is sometimes not suitable for perfomance issues.
+So how do we solve this? By waiting. 
+There are two kinds: implicit and explicit wait. 
+The first one is kind of a glorified sleep. You have to declare this every time you want to wait for something
+```
+driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+```
+The second one is the real deal. You setup the configuration for every single sleep. If the element is shown before the timeout, it automatically procedes and does not have to wait for the whole specified duration of the wait.
+Although, it's quite more verbose 
+
+```
+WebDriverWait webDriverWait = new WebDriverWait(driver, 10);
+webDriverWait.withMessage("Element not found");
+
+//Then we declare we must wait for an element 
+WebElement elementToWait = webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("example-id"))));
+
+```
+When using explicit wait, you should declare exceptions in the test case
+```
+@Test(expectedExcpetions = ElementNotVisibleException.class)
+public void testOne(){
+...
+}
+```
+### Alert Boxes
+You know those annoying little boxes that show up when the website wants to send you notifications or get your location?
+Well, there's a special Object for them 
+```
+Alert alet = driver.switchTo().alert();
+```
+
+There's not much to do with these ones. You either accept them or not. To do so:
+```
+alert.accept();
+
+alert.dismiss();
+```
+
+### Handling windows 
+Windows have handles. If you want to switch between them, you gotta get the handle and then switch. 
+
+```
+driver.getWindowHandle(); //For current active window
+driver.getWindowHandles(); //For all open windows
+
+```
+
+To get the second handle 
+```
+firstWindowHandle = driver.getWindowHandle();
+
+for(String handle: driver.getWindowHandles()){
+	if(!firstWindowHandle.equals(handle)){
+		secondWindowHandle = handle;
+		break;
+	}
+}
+
+//switching to second handle
+
+driver.switchTo().window(secondWindowHandle);
+
+//remember to use driver.close() for each window!
+```
+### Handling frames
+Ever seen those embedded maps in a page that come from Google Maps? Well, those are frames. 
+And they're kind of like windows: if you want to interact with an element inside of it, you have to swith to its frame.
+
+```
+driver.switchTo().parentFrame();
+driver.switchTo().frame(index);
+```
+**NOTE**:If you're switching between frames, make sure to go to the parent frame beforehand, otherwise the test will fail! 
+
+### Taking screenshots
+Have you ever felt the need to immortalize whenever a test fails? Well I got the thing for you! 
+Introducing  *Screenshots*
+
+Honestly, this is better handled better in the Listener Class. But if you ever need to take a Screenshot, here's how
+
+```
+File screenshot = new ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+
+FileUtils.copyFile(screenshot, new File(".target/"+driver+"-screenshot.png"));
+
+### More Actions 
+Let's face it: clicking and writing is not all you need when testing. Sometimes, you gotta drag and drop, hover, double click and all sorts of daredevil-y things with that mouse of yours. 
+Enter *Actions*
+With actions you can make all those and more. 
+I'm only listing a couple, but there's more
+```
+Actions actions = new Actions(driver);
+
+//Always end your actions with perform or the won't be, well, perfomed
+actions.dragAndDropBy(webElement, coordinateX, coordinateY).perform();
+
+actions.clickAndHold(webElement);
+
+actions.moveToElement(webElement);//this one is emulates hovering
+```
+Honestly, many many things can be done with actions. Like scrolling into the view of a certain element, so use them. 
+
+And, please, don't forget the *.perform()* at the end. 
+
+## Proverbial Wisdom Section
+Well,  it seems that you know the essential, and a bit more, to go out there and start testing. 
+I'm no expert, but I've had no trouble automating tests with what I've written so far, but here goes a couple things that could help you out:
+1. Sometimes the page is the problem: Yeah. Sometimes clickable elements can only be interacted by using a JavaScript click, but that's just bad design so don't stress about it. If you can't click it, click it with JavaScript. 
+2. Dropdown search bars are a pain: sometimes you'll need to validate something to do with search suggestions, but when you try clicking it to inspect it, it disappears! So here goes what I usually do:
+	1. Take a deep breath. 
+	2. Enter something in the search bar, literally anything. Take note of the suggestions
+	3. Ctrl+F in the console and enter the one of the suggestions 
+	4. You found it! Even when the code changes when the suggestions disappear, the suggestions are still there in the code, but not visible. 
+3. Sometimes in POM it's way more reliable to use driver.findElement than an @FindBy annotation, so try changing if your test is failing to find a certain element. 
+
+I hope that with these snippets and example code, you can get an idea of how to do stuff. Of course there are more advanced stuff, but this is enough to get you started. 
