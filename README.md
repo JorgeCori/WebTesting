@@ -53,7 +53,7 @@ In order to use these, you have to setup a Maven project, no archetype needed. O
 
   </dependencies>
 	
-''' 
+```
 *NOTE*: The dependency used for WebDriverManager stopped working for some reason when updating to the latest version. 
 It's better to work with this dependency because it allows you to run the tests in different browsers without having to download each driver. 
 However, all codes shown in here are done calling directly a ChromeDriver so the tests can run. If WebDriverManager is fixes, make sure to use it for better integration. 
@@ -104,7 +104,7 @@ public void ThisMethodTakesTheParamenterInTheFirstArgument(String parameterPasse
 //@Test(enabled = false) ignores the test case
 //@Test(timeOut = 4000) waits for a specific test case for 4000 milliseconds
 //@Test(groups = {"tagName"}) creates a tag for the test in order to group it with some other cases
-'''
+```
 
 Use these accordingly to your testing needs. For example, a BeforeTest can be used to create the WebDriver Object every time you run a new test, or an AfterTest can clean up remaining data. 
 It's important to use these annotations, since suites run the Tests in *alphabetical order*, so take that into consideration. 
