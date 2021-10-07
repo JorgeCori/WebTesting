@@ -225,3 +225,142 @@ Let's setup a utilities class to help us setup the driver and quitting the brows
 This file can be found as *AbstractWebDriver.java* in the repository. 
 
 This will be used as a super class, so that we can inherit the driver object.  
+
+Notice there are different lines commented on this file when building the driver. The current method is using a local copy of the ChromeDriver, however, I recommend using the WebDriverManager. 
+
+
+2. Setup your main class
+This class will be used to contain the tests per se. Any number of classes can be used to contain the tests and, using it along with the testng.xml, you can express how you want those tests to execute. 
+So, create a new testNG class and make the AbstractWebDriver the super class in order to add functionality of driver building automatically whenever you run a test. 
+
+3. Get going with selectors and stuff
+When you're testing on Web, you have to interact with three types of elements: HTML, CSS and JavaScript. 
+Usually, you can get a class or id specified for important elements in CSS, however you might need to search certain tags (HTML) or execute JavaScript in order to interact with an element (or perform certain hacks). 
+
+Using the Dev Tools in your browser, you can actually run commands to identify both elements by CSS Selectors and XPath 
+It's a good practice to execute your selectors here to corroborate that they do identify the element and, once it's confirmed that itworks, adding it to your testing script. 
+
+So, how to execute this commands? 
+For **CSS**: 
+```
+$$("CSS-Selector")
+```
+Where CSS Selector can be the id, class, tag, etc. Remember that when looking for ids you use ".", as in ".id-name"; for classes you use "#", as in "#class-name".
+
+For **XPath**:
+```
+$x("//tag[attribute]")
+
+$X("//tag[@id = 'id-name']")
+```
+The double slash indicates to search for all elements under the relative path, however, the absolute path can also be specified. 
+An @class can also be used to look for the element with the class name specified in XPath, however, it must be noted that this won¿t work if the element has multiple classes. 
+
+### Locating elements
+So, you have your selector. You've confirmed this identifies the desired element using the Dev Tools. Now, we search for it using the *findElement* method. 
+When you store an element, the type for it is a **WebElement**, so remember to declare it that way. 
+
+```
+WebElement nameOfElementByID = driver.findElement(By.id("id-name"));
+
+WebElement nameOfElementByName = driver.findElement(By.name("css-name"));
+
+WebElement nameOfElementByTag = driver.findElement(By.tagName("tag"));
+
+```
+Now, when your're using id or names, there's not much trouble since it's non duplicable. However, there may be many elements with an associated tag.
+Retrieving an element using the tag method only gets the **first element** with that tag. 
+If you want to **retrieve all elements**, you have to store it in a List:
+```
+List<WebElement> tagElements = driver.findElements(By.tagName("tag"));
+```
+When you have certain links that are associated to visible text, you can actually retrieve it by checking for the text
+
+```
+driver.findElement(By.linkText("www.gooogle.com")); //this method retrieves the element with the exact match
+
+driver.findElement(By.partialLinkText("google")); //this method retrieves any element that contains the argument as a substring 
+```
+
+Many times you'll find elements that have no id, name or class (An example of this are tables).
+To deal with this, we use CSS Selectors and XPath Selector
+
+```
+driver.findElement(By.cssSelector("cssSelector"));
+
+driver.findElement(By.xpath("xpathSelector"));
+```
+You can get these selectors by inspecting the element, and then right click, copy, and choose xpath selector or css selector. 
+Use this sparingly, since many times this cannot be reliable when it's under many divs and stuff. If the website ever changes, you're gonna havve a bad time. 
+
+Usually, the hierarchy is:
+
+*id -> name -> tag name -> CSS/XPath Selector * 
+
+### Caching elements 
+Name says it all. You store a parent WebElement and then search inside that element. This has a lot of impact in performance, given that you don't perform searches in the whole page, but only in one element. 
+
+```
+WebElement cachedElement = driver.findElement(By.cssSelector("#dataTables-example"));
+
+cachedElement.findeElement(By.cssSelector("#dataColumn-example"));
+
+```
+
+### Interacting with Radio Buttons and Select Boxes and Text areas
+Radio Buttons are part of single set. Usually, each option doesn´t have an id, so you usually want to use the name
+
+```
+List<WebElement> options = driver.findElements(By.name("name"));
+//we loop around the list to get each individual option (or use functional programming)
+
+for(WebElement option:options){
+	option.getAttribute("value").equals("...");
+}
+```
+
+Now onto **Select Boxes**. There are Select Boxes that allow multi selecting, and others that don't, so be careful. 
+To interact with these elements, there's a special object we can use
+```
+Select selectBoxElement = new Select(driver.findElement(By.id("an-example-id")));
+```
+Now you have several methods at your disposal to deal with these new elements:
+
+```
+selectBoxElement.getAllSelectedOptions();
+
+selectBoxElement.selectByValue();// Search with the 'value' attribute
+
+selectBoxElement.selectByVisibleText();// The actual text displayed in the option
+
+selectBoxElement.selectByIndex();// Index starts at 0
+
+selectBoxElement.deselectAll(); 
+
+selectBoxElement.deselectByVisibleText();
+```
+Finally, **Text Areas** are pretty straight forward
+
+If you want to get the text in a text area, it's usually stored in the attribute "value", so
+```
+textElement.getAttribute("value");
+```
+Now, the two standard this you'll be doing with these elements is inputting text and clicking them, so
+To **enter text**:
+```
+textElement.sendKeys("Your string here");
+```
+
+To **click**:
+```
+clickableElement.click();
+```
+
+Now, there are some elements that seem clickable but are actually not. Sometimes the parent or child element is the one clickable 
+Executing some JavaScript may be an option to get there without having to find the selector. 
+
+```
+JavascriptExecutor jse = (JavaScriptExecutor) driver;
+WebElement parentElementFromChild = (WebElement) jse.ExecuteScript("return arguments[0].parentNode;", childElement);
+```
+
