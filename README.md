@@ -370,7 +370,7 @@ There are a handful of these methods, but these are the two most used:
 ```
 Assert.assertTrue(); // expects the value in the argument to be true, otherwise the test case fails
 Assert.asserEquals(actualResult, expectedResult); //compares values to determine if you for what you wanted. This can be applied to all primitive data type
-
+```
 ## Advanced Test Features 
 Big boy stuff. Not really, but here are more functionalities that may help you out. 
 
