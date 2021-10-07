@@ -52,8 +52,7 @@ In order to use these, you have to setup a Maven project, no archetype needed. O
     </dependency>
 
   </dependencies>
-	
-```
+'''
 *NOTE*: The dependency used for WebDriverManager stopped working for some reason when updating to the latest version. 
 It's better to work with this dependency because it allows you to run the tests in different browsers without having to download each driver. 
 However, all codes shown in here are done calling directly a ChromeDriver so the tests can run. If WebDriverManager is fixes, make sure to use it for better integration. 
