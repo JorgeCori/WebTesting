@@ -488,7 +488,7 @@ Honestly, this is better handled better in the Listener Class. But if you ever n
 File screenshot = new ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 
 FileUtils.copyFile(screenshot, new File(".target/"+driver+"-screenshot.png"));
-
+```
 ### More Actions 
 Let's face it: clicking and writing is not all you need when testing. Sometimes, you gotta drag and drop, hover, double click and all sorts of daredevil-y things with that mouse of yours. 
 Enter *Actions*
